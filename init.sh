@@ -49,10 +49,12 @@ if [[ -n "${remote_config}" ]]; then
     if [[ "${remote_config}" =~ ^s3://.+ ]]; then
       sync_cmd="aws s3 sync --exclude *resolvers.conf --exclude *environment.conf.d/*vars.server.conf --exclude *environment.conf.d/*upstreams.http.conf --delete ${remote_config} /etc/api-gateway/"
       echo "   ... syncing from s3 using command ${sync_cmd}"
-    else
-      echo "   ... but this REMOTE_CONFIG is not supported "
+    elif [[ "${remote_config}" =~ ^/.+ ]]; then
+      sync_cmd="rsync -a --exclude *resolvers.conf --exclude *environment.conf.d/*vars.server.conf --exclude *environment.conf.d/*upstreams.http.conf --delete ${remote_config}/ /etc/api-gateway/"
+      echo "   ... syncing from local using command ${sync_cmd}"
     fi
 fi
+
 api-gateway-config-supervisor \
         --reload-cmd="api-gateway -s reload" \
         --sync-folder=/etc/api-gateway \

@@ -236,6 +236,11 @@ RUN \
     && chmod 755 /usr/local/bin/jq \
     && rm -rf /var/cache/apk/*
 
+RUN \
+  apk update \
+  && apk add rsync \
+  && rm -rf /var/cache/apk/*
+
 COPY init.sh /etc/init-container.sh
 ONBUILD COPY init.sh /etc/init-container.sh
 
